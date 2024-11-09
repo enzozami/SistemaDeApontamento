@@ -66,7 +66,7 @@
                         <tr>
                             <th class="text-center">Numero Ordem: </th>
                             <th class="text-center">Código: </th>
-                            <th class="text-center">Quantidade: </th>
+                            <th class="text-center">Quantidade Máxima: </th>
                             <th class="text-center">Lote: </th>
                             <th class="text-center">Operador: </th>
                         </tr>

@@ -25,13 +25,13 @@
         }
 
         $nop = filter_input(INPUT_POST, "nop", FILTER_DEFAULT);
-        $quantidade = filter_input(INPUT_POST, "quantidade", FILTER_DEFAULT);
 
         if($nop){
             $sqlNumOrdem = "SELECT * FROM nop
-                    WHERE numero_ordem = :numOrdem";
+                    WHERE numero_ordem = :numOrdem, codigo = :cod";
             $parametroNumOrdem = [
-                "numOrdem" => $nop
+                "numOrdem" => $nop,
+                "cod" => $nop
             ];
             $stmt = $connection->prepare($sqlNumOrdem);
             $stmt->execute($parametroNumOrdem);
@@ -42,7 +42,7 @@
     <h5 class="text-center mx-auto py-3" style="background-color: rgb(63, 0, 113); color: #fff; ">APONTAMENTO</h5>
     
     <div class="container">
-        <form action="" method="post">
+        <form action="../script/insertQuantidade.php" method="post">
             <div id="apontamentoForm" class="mt-0">
                 <!--PRIMEIRA PARTE-->
                 <div class="row mt-5 text-center">  
@@ -108,9 +108,9 @@
             </div>
             <div class="d-flex justify-content-center align-items-center mt-5" style="background-color: rgb(63, 0, 113);">    
                 <div class="text-center py-2 px-2" style="background-color: rgb(63, 0, 113);">                    
-                    <button type="submit" class="btn btn-outline-info">Iniciar</button>
+                    <button type="submit" name="iniciar_op" id="iniciar_op" class="btn btn-outline-info" >Iniciar</button>
                     <a href="apontamento.php" class="btn btn-outline-danger">Limpar</a>
-                    <button type="submit" class="btn btn-outline-success">Finalizar</button>
+                    <button type="submit" name="finalizar_op" id="finalizar_op" class="btn btn-outline-success" >Finalizar</button>
                 </div>    
             </div>
         </form>
@@ -131,6 +131,36 @@
             document.getElementById('maquina').selectedIndex = 0; // reinicia para o padrao se o campo 'usi' for desselecionado
         }
     }); 
+
+    document.getElementById('iniciar_op').addEventListener('click', function(){
+        this.disabled = true;
+        document.getElementById('finalizar_op').disabled = false;        
+    });
+
+    
+    document.getElementById('nop').addEventListener('blur', function() {
+        var nop = this.value;
+        
+        if (nop) {
+            fetch('../script/buscarCodigo.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'nop=' + encodeURIComponent(nop)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.codigo) {
+                    document.getElementById('codigo').value = data.codigo;
+                } else {
+                    document.getElementById('codigo').value = '';
+                    alert("Código não encontrado para essa ordem.");
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar o código:', error);
+                });
+            }
+        });
     </script>
 </body>
 </html>
