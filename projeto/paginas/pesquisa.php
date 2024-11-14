@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="../style.css">
 </head>
-<body style="background-color: #b5b5b5; width: 100%; height: 100%;" class="d-flex flex-column min-vh-100">
+<body style="background-color: #b5b5b5; width: 100%; height: 100%;" class=" flex-column min-vh-100">
     <!-- TEMPLATE + BANCO DE DADOS -->
      <?php 
         include_once "../template/template.php";
