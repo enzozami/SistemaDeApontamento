@@ -19,13 +19,6 @@ document.querySelector('form').addEventListener('submit', function(event){
         document.getElementById('error-message-operacao').style.display = 'none';
     }
 
-    if(!operador.value.match(/^[0-9]{2}$/)){
-        document.getElementById('error-message-operador').style.display = 'block';
-        isValid = false;
-    } else {
-        document.getElementById('error-message-operador').style.display = 'none';
-    }
-
     if(!isValid){
         event.preventDefault();
     }

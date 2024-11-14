@@ -11,7 +11,7 @@
 
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="background-color: #b5b5b5; width: 100%; height: 100%;">
+<body style="background-color: #b5b5b5; width: 100%; height: 100%;" class="d-flex flex-column min-vh-100"> <!--  -->
     
 <!--CABEÇALHO COM O NOME O-LINKe-->
     <header class="topo d-flex justify-content-center align-items-center mt-0" style="background-color: rgb(63, 0, 113);">
@@ -23,9 +23,9 @@
 
     <div class="container">
         <form action="" method="post">
-            <div class="row text-center">    
+            <div class="row justify-content-center align-items-center text-center" style="min-height: 67vh!important;"><!--  -->    
                 <!--ICON PARA IR PARA A PÁGINA DE APONTAMENTO-->
-                <div class="col-4 py-5">
+                <div class="col-4">
                     <a href="paginas/apontamento.php" class="text-decoration-none">
                         <div class="icon">
                             <i class="bi bi-save"> <br>
@@ -35,17 +35,17 @@
                     </a>
                 </div>
                 <!--ICON PARA IR PARA A PÁGINA DE PESQUISA-->
-                <div class="col-4 py-5">
+                <div class="col-4">
                     <a href="paginas/pesquisa.php" class="text-decoration-none">
                         <div class="icon">
-                            <i class="bi bi-search"> <br>
+                            <i class="bi bi-search" > <br>
                                 <div class="text">Pesquisa</div>
                             </i>
                         </div>
                     </a>
                 </div>
                 <!--ICON PARA IR PARA A PÁGINA DE OPERADORES-->
-                <div class="col-4 py-5">
+                <div class="col-4">
                     <a href="paginas/operadores.php" class="text-decoration-none">
                         <div class="icon">
                             <i class="bi bi-universal-access"> <br>
@@ -57,5 +57,8 @@
             </div>
         </form>
     </div>
+    <?php
+        include_once "template/footer.php"
+    ?>
 </body>
 </html>

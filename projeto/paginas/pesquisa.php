@@ -10,11 +10,10 @@
 
     <link rel="stylesheet" href="../style.css">
 </head>
-<body style="background-color: #b5b5b5; width: 100%; height: 100%;">
+<body style="background-color: #b5b5b5; width: 100%; height: 100%;" class="d-flex flex-column min-vh-100">
     <!-- TEMPLATE + BANCO DE DADOS -->
      <?php 
         include_once "../template/template.php";
-
         include_once "../script/conexao.php";
 
         if(is_null($connection)){
@@ -67,8 +66,10 @@
                             <th class="text-center">Numero Ordem: </th>
                             <th class="text-center">Código: </th>
                             <th class="text-center">Quantidade Máxima: </th>
+                            <th class="text-center">Quantidade: </th>
                             <th class="text-center">Lote: </th>
                             <th class="text-center">Operador: </th>
+                            <th class="text-center">Horário Final: </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,9 +78,11 @@
                             <tr>
                                 <td class="text-center"><?= $ordem['numero_ordem'] ?></td>
                                 <td class="text-center"><?= $ordem['codigo'] ?></td>
-                                <td class="text-center"><?= $ordem['quantidade'] ?></td>
+                                <td class="text-center"><?= $ordem['quantidadeMaxima'] ?></td>
+                                <td class="text-center"><?= $ordem['quantidade'] ?></td> 
                                 <td class="text-center"><?= $ordem['lote'] ?></td>
                                 <td class="text-center"><?= $ordem['nome_operador'] ?></td>
+                                <!-- <td class="text-center"><?=date_format(new DateTime($ordem['data_cadastro']), "d/m/Y")?></td> -->
                             </tr>
                     <?php
                         }
@@ -93,5 +96,8 @@
             }
         ?>
     </div>
+<?php 
+    include_once "../template/footer.php"
+?>
 </body>
 </html>
