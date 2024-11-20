@@ -2,7 +2,7 @@
         $serverName = "localhost";
         $user = "root";
         $password = "";
-        $dataBase = "banco_tcc_apont";
+        $dataBase = "teste";
         $connection = null;
         
         try {

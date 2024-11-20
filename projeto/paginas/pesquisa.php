@@ -23,8 +23,14 @@
 
         $pesquisar = filter_input(INPUT_POST, "pesquisar", FILTER_DEFAULT);
 
-        $sql = "SELECT * FROM nop 
-                INNER JOIN operadores ON nop.operador_id = operadores.id_operador
+        $sql = "SELECT *, nop.codigo AS codigo, nop.lote AS lote, nop.quantidadeMaxima AS Quantidade_Maxima 
+                FROM historico
+                INNER JOIN nop 
+                    ON ordem = numero_ordem 
+                INNER JOIN operadores 
+                    ON historico.operador_id = id_operador
+                INNER JOIN operacao 
+                    ON historico.operacao_id = id_operacao
                 WHERE numero_ordem = :numeroOrdem OR codigo LIKE :cod OR lote LIKE :lot";
         $parametro = [
             "numeroOrdem" => $pesquisar,
@@ -63,13 +69,14 @@
                 <table class="table table-striped table-hover table-border mt-3">
                     <thead class="table-dark">
                         <tr>
-                            <th class="text-center">Numero Ordem: </th>
-                            <th class="text-center">Código: </th>
-                            <th class="text-center">Quantidade Máxima: </th>
-                            <th class="text-center">Quantidade: </th>
-                            <th class="text-center">Lote: </th>
-                            <th class="text-center">Operador: </th>
-                            <th class="text-center">Horário Final: </th>
+                            <th class="text-center">Numero Ordem </th>
+                            <th class="text-center">Código </th>
+                            <th class="text-center">Lote </th>
+                            <th class="text-center">Quantidade Máxima </th>
+                            <th class="text-center">Quantidade </th>
+                            <th class="text-center">Operador </th>
+                            <th class="text-center">Operação </th>
+                            <th class="text-center">Horário Final </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -78,11 +85,12 @@
                             <tr>
                                 <td class="text-center"><?= $ordem['numero_ordem'] ?></td>
                                 <td class="text-center"><?= $ordem['codigo'] ?></td>
+                                <td class="text-center"><?= $ordem['lote'] ?></td>
                                 <td class="text-center"><?= $ordem['quantidadeMaxima'] ?></td>
                                 <td class="text-center"><?= $ordem['quantidade'] ?></td> 
-                                <td class="text-center"><?= $ordem['lote'] ?></td>
                                 <td class="text-center"><?= $ordem['nome_operador'] ?></td>
-                                <!-- <td class="text-center"><?=date_format(new DateTime($ordem['data_cadastro']), "d/m/Y")?></td> -->
+                                <td class="text-center"><?= $ordem['nome_operacao'] ?></td>
+                                <td class="text-center"><?=date_format(new DateTime($ordem['data_final']), "d/m/Y")?></td>
                             </tr>
                     <?php
                         }

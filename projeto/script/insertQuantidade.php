@@ -1,68 +1,115 @@
-<?php
-include_once "conexao.php"; // Inclui o arquivo de conexão com o banco de dados
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <?php
+        include_once "conexao.php"; // Inclui o arquivo de conexão com o banco de dados
+    ?>
+    <div class="container">
+        <h2 class="text-center my-2">APONTAMENTO</h2>
+        <?php
+            // Captura os dados do formulário usando 
+            $nop = filter_input(INPUT_POST, "nop", FILTER_SANITIZE_STRING);
+            $quantidade = filter_input(INPUT_POST, "quantidade", FILTER_SANITIZE_NUMBER_INT);
+            $operador = filter_input(INPUT_POST, "operador", FILTER_SANITIZE_NUMBER_INT);
+            $operacao = filter_input(INPUT_POST, "operacao", FILTER_SANITIZE_NUMBER_INT);
+            $maquina = filter_input(INPUT_POST, "maquina", FILTER_SANITIZE_NUMBER_INT); // Não obrigatório
 
-// Captura os dados do formulário usando 
-$nop = filter_input(INPUT_POST, "nop", FILTER_SANITIZE_STRING);
-$quantidade = filter_input(INPUT_POST, "quantidade", FILTER_SANITIZE_NUMBER_INT);
-$operador = filter_input(INPUT_POST, "operador", FILTER_SANITIZE_NUMBER_INT);
-$operacao = filter_input(INPUT_POST, "operacao", FILTER_SANITIZE_NUMBER_INT);
-$maquina = filter_input(INPUT_POST, "maquina", FILTER_SANITIZE_NUMBER_INT); // Não obrigatório
+            $converter = (int)$quantidade;
+            //var_dump($converter);
 
-$converter = (int)$quantidade;
-//var_dump($converter);
+            // Validação dos campos
+            if (empty($nop) || empty($quantidade) || empty($operador) || empty($operacao)) {
+                // Se faltar algum campo obrigatório
+               $mensagem = "Por favor, preencha todos os campos obrigatórios.";
+            }
 
-// Validação dos campos
-if (empty($nop) || empty($quantidade) || empty($operador) || empty($operacao)) {
-    // Se faltar algum campo obrigatório
-   die("Por favor, preencha todos os campos obrigatórios.");
-}
+            // Verificar se a operação exige máquina e se foi preenchida
+            if (($operacao == 'pro') && empty($maquina)) {
+                $mensagem = "Por favor, selecione uma máquina para a operação.";
+            }
 
-// Verificar se a operação exige máquina e se foi preenchida
-if (($operacao == 'pro') && empty($maquina)) {
-    die("Por favor, selecione uma máquina para a operação.");
-}
+            $sql = "SELECT quantidadeMaxima FROM nop 
+                    WHERE numero_ordem = :nop";
+            $params = [
+                "nop" => $nop
+            ];
+            // Executar a consulta
+            $stmt = $connection->prepare($sql);
+            $stmt->execute($params);
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$sql = "SELECT quantidadeMaxima FROM nop 
-        WHERE numero_ordem = :nop";
-$params = [
-    "nop" => $nop
-];
-// Executar a consulta
-$stmt = $connection->prepare($sql);
-$stmt->execute($params);
-$resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            //var_dump($resultado);
+            //var_dump($quantidade);
 
-//var_dump($resultado);
-//var_dump($quantidade);
+            if($resultado >= $converter){
+                // Preparar a consulta para inserir os dados no banco CASO SEJA AUTOMATICO
+                $sql = "UPDATE nop SET quantidade = :quantidade, operador_id = :operador, operacao_id = :operacao, maquina_id = :maquina  
+                        WHERE numero_ordem = :nop AND quantidadeMaxima >= :quantidade";
+                $params = [
+                    "nop" => $nop,
+                    "quantidade" => $quantidade,
+                    "operador" => $operador,
+                    "operacao" => $operacao,
+                    "maquina" => $maquina ? $maquina : NULL // Se não houver máquina, passa NULL
+                ];
+                $stmt = $connection->prepare($sql);
+                $stmt->execute($params);
+                $produtoAtualizado = $stmt->rowCount();
+            
+            //INSERT TABELA HISTORICO
+                $sqlHist = "INSERT INTO historico(ordem, quantidade, operacao_id, maquina_id, operador_id, data_final) 
+                            VALUES (:nop, :quant, :operacao, :maquina, :operador, CURRENT_DATE())"; // data_inicial, data_final,
+                $paramsHist = [
+                    "nop" => $nop,
+                    "quant" => $quantidade,
+                    "operador" => $operador,
+                    "operacao" => $operacao,
+                    "maquina" => $maquina ? $maquina : NULL // Se não houver máquina, passa NULL
+                ];
 
-if($resultado >= $converter){
-    // Preparar a consulta para inserir os dados no banco CASO SEJA AUTOMATICO
-    $sql = "UPDATE nop SET quantidade = :quantidade, operador_id = :operador, operacao_id = :operacao, maquina_id = :maquina  
-            WHERE numero_ordem = :nop AND quantidadeMaxima >= :quantidade";
-            //ARRUMAR INSERT
-        /*$sql = "INSERT INTO nop(quantidade, operador_id, operacao_id, maquina_id)
-                VALUES (:quant, operador, operacao, maquina)
-                WHERE numero_ordem = :nop";*/
-    // Preparar os parâmetros
-    $params = [
-        "nop" => $nop,
-        "quantidade" => $quantidade,
-        "operador" => $operador,
-        "operacao" => $operacao,
-        "maquina" => $maquina ? $maquina : NULL // Se não houver máquina, passa NULL
-    ];
-// Executar a consulta
-$stmt = $connection->prepare($sql);
-$stmt->execute($params);
-} else {
-    echo"nao existe";
-}
-//Verificar se a inserção foi bem-sucedida
-if ($stmt->rowCount() > 0) {
-    // Sucesso
-    echo "Apontamento registrado com sucesso!";
-} else {
-    // Erro
-    echo "Erro ao registrar apontamento. Tente novamente.";
-}
-?>
+            // Executar a consulta
+                $stmt = $connection->prepare($sqlHist);
+                $stmt->execute($paramsHist);
+                $produtoInserido = $stmt->rowCount();
+            
+            } else {
+                $mensagem = "Quantidade acima do permitido!";
+            }
+            //Verificar se a inserção foi bem-sucedida
+            if ($produtoInserido > 0) {
+                // Sucesso
+                $mensagem =  "Apontamento registrado com sucesso!";
+                $alertColor = "success";
+            } else {
+                // Erro
+                $mensagem =  "Erro ao registrar apontamento. Tente novamente.";
+                $alertColor = "danger";
+            }
+        ?>
+
+        <div class="alert alert-<?=$alertColor?> my-3 text-center">
+            <?=$mensagem?>
+        </div>
+    
+        <div class="text-center my-3">
+            <div class="btn-group">
+                <a href="../paginas/apontamento.php" class="btn btn-info" style="width: 200px;">Apontamento</a>
+                <a href="../paginas/pesquisa.php" class="btn btn-success" style="width: 200px;" >Pesquisa</a>
+            </div>
+        </div>
+    </div>
+    <?php 
+        include_once "../template/footer.php";
+    ?>
+</body>
+</html>

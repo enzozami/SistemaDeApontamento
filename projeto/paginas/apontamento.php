@@ -44,18 +44,18 @@
             <div class="row mt-5 text-center">
                 <!-- NÚMERO DA ORDEM -->
                 <div class="col">
-                    <label for="nop" class="form-label fw-bold">Número Ordem:</label>
+                    <label for="nop" class="form-label fw-bold">Número Ordem</label>
                     <input type="text" id="nop" name="nop" class="form-control" title="Número Ordem" required>
                     <div id="error-message-nop" style="color: red; display: none">Entrada Inválida.</div>
                 </div>
                 <!-- CÓDIGO -->
                 <div class="col">
-                    <label for="codigo" class="form-label fw-bold">Código:</label>
+                    <label for="codigo" class="form-label fw-bold">Código</label>
                     <input type="number" id="codigo" name="codigo" class="form-control" readonly>
                 </div>
                 <!-- QUANTIDADE -->
                 <div class="col">
-                    <label for="quantidade" class="form-label fw-bold">Quantidade:</label>
+                    <label for="quantidade" class="form-label fw-bold">Quantidade</label>
                     <input type="number" step="any" id="quantidade" name="quantidade" class="form-control" required>
                 </div>
             </div>
@@ -64,14 +64,14 @@
             <div class="row mt-5 text-center">
                 <!-- OPERADOR -->
                 <div class="col">
-                    <label for="operador" class="form-label fw-bold">Operador:</label>
+                    <label for="operador" class="form-label fw-bold">Operador</label>
                     <input type="number" id="operador" name="operador" class="form-control" required>
                 </div>
                 <!-- OPERAÇÃO -->
                 <div class="col">
-                    <label for="operacao" class="form-label fw-bold">Operação:</label>
+                    <label for="operacao" class="form-label fw-bold">Operação</label>
                     <select name="operacao" id="operacao" class="form-control rounded-pill" required>
-                        <option value="">Selecione uma operação:</option>
+                        <option value="">Selecione uma operação</option>
                         <option value="1">Produção</option>
                         <option value="2">Rebarbar</option>
                         <option value="3">Polimento</option>
@@ -83,7 +83,7 @@
                 </div>
                 <!-- MÁQUINA (exibido somente para algumas operações) -->
                 <div class="col";">
-                    <label for="maquina" class="form-label fw-bold">Máquina:</label>
+                    <label for="maquina" class="form-label fw-bold">Máquina</label>
                     <select name="maquina" id="maquina" class="form-control rounded-pill">
                         <option value="">Selecione uma máquina</option>
                         <option value="1">L20</option>

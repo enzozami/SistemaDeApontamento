@@ -17,13 +17,17 @@
 
         $turnos = filter_input(INPUT_POST, "turnos", FILTER_DEFAULT);
 
-        $sql = "SELECT * FROM operadores
-                WHERE id_operador = :numeroOperador";
+        $sqlOperadores = "SELECT *, turnos.nome_turno AS turnos_nome 
+                        FROM operadores
+                        LEFT JOIN turnos
+                        ON turnos_id = id_turnos
+                        WHERE id_operador = :numeroOperador OR nome_operador LIKE :nome";
         $parametro = [
-            "numeroOperador" => $turnos
+            "numeroOperador" => $turnos,
+            "nome" => "%$turnos%"
         ];
 
-        $stmt = $connection->prepare($sql);
+        $stmt = $connection->prepare($sqlOperadores);
         $stmt->execute($parametro);
         $nop = $stmt->fetchAll(PDO::FETCH_ASSOC);
     ?>
@@ -36,7 +40,7 @@
                 <div class="col">
                     <label for="" class="form-label fw-bold">TURNOS:</label>
                     <div class="input-group mb-2">
-                        <input name="turnos" type="text" class="form-control rounded-end" placeholder="Insira o Turno" value="<?= $_POST['termo'] ?? null ?>">
+                        <input name="turnos" type="text" class="form-control rounded-end" placeholder="Insira ID ou NOME do operador" value="<?= $_POST['turnos'] ?? null ?>">
                         <button type="submit" class="btn btn-outline-success">Pesquisar</button>
                         <a href="operadores.php" class="btn btn-outline-danger">Limpar</a>
                     </div>
@@ -57,11 +61,11 @@
                     </thead>
                     <tbody>
                         <?php
-                        foreach($nop as $operadores){ ?>
+                        foreach($nop as $operador){ ?>
                             <tr>
-                                <td class="text-center"><?= $operadores['id_operador'] ?></td>
-                                <td class="text-center"><?= $operadores['nome_operador'] ?></td>
-                                <td class="text-center"><?= $operadores['nome_turno'] ?></td>
+                                <td class="text-center"><?= $operador['id_operador'] ?></td>
+                                <td class="text-center"><?= $operador['nome_operador'] ?></td>
+                                <td class="text-center"><?= $operador['turnos_nome'] ?></td>  
                             </tr>
                     <?php
                         }
@@ -71,7 +75,7 @@
 
         <?php
             } else {
-                echo"<div class='alert alert-warning my-3 text-center fw-bold'> Nenhum registro foi encontrado... </div>";
+                echo"<div class='alert alert-warning my-3 text-center fw-bold'> Insira o ID ou o NOME do operador... </div>";
             }
         ?>
     </div>
