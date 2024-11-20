@@ -98,6 +98,19 @@
                     </select>
                 </div>
             </div>
+            <!-- TERCEIRA PARTE: DATA, HORA, PERDA -->
+            <div class="row mt-5 text-center">
+                <!-- Data e Hora Inicial -->
+                <div class="col">
+                    <label for="operador" class="form-label fw-bold">Data/Hora Inicial</label>
+                    <input type="datetime-local" id="data_inicial" name="data_inicial" class="form-control" required>
+                </div>
+                <!-- Perda -->
+                <div class="col">
+                    <label for="operacao" class="form-label fw-bold">Perda</label>
+                    <input type="number" step="any" id="perda" name="perda" class="form-control">
+                </div>
+            </div>
         </div>
 
         <!-- BOTÕES DE AÇÃO -->
