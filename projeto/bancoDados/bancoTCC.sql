@@ -1,6 +1,6 @@
-CREATE DATABASE teste;
+CREATE DATABASE bancoTCCofc;
 
-USE teste;
+USE bancoTCCofc;
 
 CREATE TABLE maquina(
     id_maquina INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,

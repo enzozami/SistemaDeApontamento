@@ -2,7 +2,7 @@
         $serverName = "localhost";
         $user = "root";
         $password = "";
-        $dataBase = "teste";
+        $dataBase = "bancoTCCofc";
         $connection = null;
         
         try {

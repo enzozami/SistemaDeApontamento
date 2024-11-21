@@ -54,7 +54,7 @@
             var_dump($resultado);
             //var_dump($quantidade);
             $pecas = $quant + $perd;
-            var_dump($pecas);
+            // var_dump($pecas);
             if($pecas <= $resultado['quantidadeMaxima']){
                 // Preparar a consulta para inserir os dados no banco CASO SEJA AUTOMATICO
                 $sql = "UPDATE nop SET quantidade = :quantidade, operador_id = :operador, operacao_id = :operacao, maquina_id = :maquina, data_inicial = :dataInicial, data_final = NOW(), perda = :perd
