@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <title>Document</title>
 </head>
-<body>
+<body style="background-color: #b5b5b5; width: 100%; height: 100%;" class=" flex-column min-vh-100">
     <?php
         include_once "conexao.php"; // Inclui o arquivo de conexão com o banco de dados
     ?>
@@ -51,49 +51,53 @@
             $stmt->execute($params);
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            var_dump($resultado);
+            // var_dump($resultado);
             //var_dump($quantidade);
             $pecas = $quant + $perd;
             // var_dump($pecas);
-            if($pecas <= $resultado['quantidadeMaxima']){
-                // Preparar a consulta para inserir os dados no banco CASO SEJA AUTOMATICO
-                $sql = "UPDATE nop SET quantidade = :quantidade, operador_id = :operador, operacao_id = :operacao, maquina_id = :maquina, data_inicial = :dataInicial, data_final = NOW(), perda = :perd
-                        WHERE numero_ordem = :nop AND quantidadeMaxima >= :quantidade";
-                $params = [
-                    "nop" => $nop,
-                    "quantidade" => $quantidade,
-                    "operador" => $operador,
-                    "operacao" => $operacao,
-                    "maquina" => $maquina ? $maquina : NULL, // Se não houver máquina, passa NULL
-                    "dataInicial" => $data_inicial,
-                    "perd" => $perda
-                ];
-                //INSERT TABELA HISTORICO
-                $sqlHist = "INSERT INTO historico(ordem, quantidade, operacao_id, maquina_id, operador_id, data_inicial, data_final, perda) 
-                            VALUES (:nop, :quant, :operacao, :maquina, :operador, :dataInicial, NOW(), :perd)"; // data_inicial, 
-                $paramsHist = [
-                    "nop" => $nop,
-                    "quant" => $quantidade,
-                    "operador" => $operador,
-                    "operacao" => $operacao,
-                    "maquina" => $maquina ? $maquina : NULL, // Se não houver máquina, passa NULL
-                    "dataInicial" => $data_inicial,
-                    "perd" => $perda
-                ];
-            } else {
-                $mensagem = "Quantidade acima do permitido!";
+            try {            
+                if($pecas <= $resultado['quantidadeMaxima']){
+                    // Preparar a consulta para inserir os dados no banco CASO SEJA AUTOMATICO
+                    $sql = "UPDATE nop SET quantidade = :quantidade, operador_id = :operador, operacao_id = :operacao, maquina_id = :maquina, data_inicial = :dataInicial, data_final = NOW(), perda = :perd
+                            WHERE numero_ordem = :nop AND quantidadeMaxima >= :quantidade";
+                    $params = [
+                        "nop" => $nop,
+                        "quantidade" => $quantidade,
+                        "operador" => $operador,
+                        "operacao" => $operacao,
+                        "maquina" => $maquina ? $maquina : NULL, // Se não houver máquina, passa NULL
+                        "dataInicial" => $data_inicial,
+                        "perd" => $perda
+                    ];
+                    //INSERT TABELA HISTORICO
+                    $sqlHist = "INSERT INTO historico(ordem, quantidade, operacao_id, maquina_id, operador_id, data_inicial, data_final, perda) 
+                                VALUES (:nop, :quant, :operacao, :maquina, :operador, :dataInicial, NOW(), :perd)"; // data_inicial, 
+                    $paramsHist = [
+                        "nop" => $nop,
+                        "quant" => $quantidade,
+                        "operador" => $operador,
+                        "operacao" => $operacao,
+                        "maquina" => $maquina ? $maquina : NULL, // Se não houver máquina, passa NULL
+                        "dataInicial" => $data_inicial,
+                        "perd" => $perda
+                    ];
+                } else {
+                    $mensagem = "Quantidade acima do permitido!";
+                }
+
+                    $stmt = $connection->prepare($sql);
+                    $stmt->execute($params);
+                    $produtoAtualizado = $stmt->rowCount();
+
+                // Executar a consulta
+                    $stmt = $connection->prepare($sqlHist);
+                    $stmt->execute($paramsHist);
+                    $produtoInserido = $stmt->rowCount();
+            
+            } catch (PDOException $ex){
+                $mensagem = "Erro pois esta operação já foi apontada. Erro: " . $ex->getMessage();
+                $alertColor = "danger";
             }
-
-                $stmt = $connection->prepare($sql);
-                $stmt->execute($params);
-                $produtoAtualizado = $stmt->rowCount();
-
-            // Executar a consulta
-                $stmt = $connection->prepare($sqlHist);
-                $stmt->execute($paramsHist);
-                $produtoInserido = $stmt->rowCount();
-            
-            
             //Verificar se a inserção foi bem-sucedida
             if ($produtoInserido > 0) {
                 // Sucesso

@@ -97,4 +97,4 @@ VALUE
 
 select * from historico;
 -- drop table nop;
--- drop table historico;
+drop table historico;
